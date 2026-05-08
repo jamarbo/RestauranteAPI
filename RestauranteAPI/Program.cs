@@ -7,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<ConexionBD>();
 builder.Services.AddScoped<UsuarioData>();
 builder.Services.AddScoped<CategoriaData>();
+builder.Services.AddScoped<PlatoData>();
+builder.Services.AddScoped<VentaData>();
+builder.Services.AddScoped<DetalleVentaData>();
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
