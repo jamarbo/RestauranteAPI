@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Registrar la conexión y la lógica de datos para que el Controlador pueda usarlos
 builder.Services.AddSingleton<ConexionBD>();
 builder.Services.AddScoped<UsuarioData>();
+builder.Services.AddScoped<CategoriaData>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
