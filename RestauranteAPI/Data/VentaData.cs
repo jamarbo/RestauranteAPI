@@ -30,8 +30,16 @@ namespace RestauranteAPI.Data
             using (var con = _conexion.Conectar())
             {
                 await con.OpenAsync();
-                // Asegúrate de tener este SP o usa un SELECT simple por ahora
-                SqlCommand cmd = new SqlCommand("SELECT id_venta, id_usuario, total, metodo_pago, fecha_venta FROM Ventas", con);
+
+                // Usamos ALIAS (AS) para que los nombres de SQL coincidan con tu objeto C#
+                string query = @"SELECT id_venta, 
+                                id_usuario, 
+                                total, 
+                                estado_pago AS metodo_pago, 
+                                fecha_hora AS fecha_venta 
+                         FROM Ventas";
+
+                SqlCommand cmd = new SqlCommand(query, con);
                 cmd.CommandType = CommandType.Text;
 
                 using (var dr = await cmd.ExecuteReaderAsync())
@@ -43,6 +51,7 @@ namespace RestauranteAPI.Data
                             id_venta = Convert.ToInt32(dr["id_venta"]),
                             id_usuario = Convert.ToInt32(dr["id_usuario"]),
                             total = Convert.ToDecimal(dr["total"]),
+                            // Ahora estos nombres sí existen en el resultado del SELECT
                             metodo_pago = dr["metodo_pago"].ToString(),
                             fecha_venta = Convert.ToDateTime(dr["fecha_venta"])
                         });
