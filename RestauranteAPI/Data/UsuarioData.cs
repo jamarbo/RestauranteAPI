@@ -70,6 +70,40 @@ namespace RestauranteAPI.Data
                 }
             }
             return oUsuario;
+
+
+        }
+
+        public async Task<bool> Registrar(Usuario objeto)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    SqlCommand cmd = new SqlCommand("usp_registrar_usuario", con);
+
+                    // Los nombres deben coincidir exactamente con el SP
+                    cmd.Parameters.AddWithValue("@nombre_completo", objeto.nombre_completo);
+                    cmd.Parameters.AddWithValue("@nombre_usuario", objeto.nombre_usuario);
+                    cmd.Parameters.AddWithValue("@password_hash", objeto.password_hash);
+                    cmd.Parameters.AddWithValue("@rol", objeto.rol);
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Jaiver, pon un punto de interrupción (Breakpoint) aquí 
+                    // para leer ex.Message si sigue dando false.
+                    Console.WriteLine("Error en Registrar: " + ex.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
         }
     }
 }

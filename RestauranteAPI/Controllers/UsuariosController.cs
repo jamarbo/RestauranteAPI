@@ -10,7 +10,6 @@ namespace RestauranteAPI.Controllers
     {
         private readonly UsuarioData _usuarioData;
 
-        // Inyectamos la lógica de datos en el controlador
         public UsuariosController(UsuarioData usuarioData)
         {
             _usuarioData = usuarioData;
@@ -31,6 +30,15 @@ namespace RestauranteAPI.Controllers
             var objeto = await _usuarioData.Obtener(id);
             if (objeto == null) return NotFound();
             return Ok(objeto);
+        }
+
+        // POST: api/usuarios/registrar
+        [HttpPost]
+        [Route("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] Usuario objeto)
+        {
+            bool respuesta = await _usuarioData.Registrar(objeto);
+            return Ok(new { resultado = respuesta });
         }
     }
 }
