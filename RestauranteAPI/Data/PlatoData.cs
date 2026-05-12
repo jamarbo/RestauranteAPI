@@ -59,5 +59,37 @@ namespace RestauranteAPI.Data
             }
             return respuesta;
         }
+
+        public async Task<bool> Registrar(Plato objeto)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    // Consulta ajustada a las columnas de tu imagen
+                    string query = @"INSERT INTO Platos (nombre, descripcion, precio, id_categoria) 
+                             VALUES (@nombre, @desc, @precio, @idCat)";
+
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@nombre", objeto.nombre);
+                    cmd.Parameters.AddWithValue("@desc", objeto.descripcion);
+                    cmd.Parameters.AddWithValue("@precio", objeto.precio);
+                    cmd.Parameters.AddWithValue("@idCat", objeto.id_categoria);
+                    cmd.CommandType = CommandType.Text;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Puedes ver el error en la consola de depuración si falla
+                    Console.WriteLine(ex.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
     }
 }

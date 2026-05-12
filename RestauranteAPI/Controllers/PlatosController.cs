@@ -39,5 +39,21 @@ namespace RestauranteAPI.Controllers
             else
                 return BadRequest(new { resultado = false, mensaje = "No se pudo eliminar el plato. Verifique si el ID existe." });
         }
+
+        [HttpPost]
+        [Route("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] Plato objeto)
+        {
+            bool respuesta = await _platoData.Registrar(objeto);
+
+            if (respuesta)
+            {
+                return Ok(new { resultado = true, mensaje = "Plato creado con éxito" });
+            }
+            else
+            {
+                return BadRequest(new { resultado = false, mensaje = "No se pudo registrar el plato. Verifique que la categoría sea válida." });
+            }
+        }
     }
 }
