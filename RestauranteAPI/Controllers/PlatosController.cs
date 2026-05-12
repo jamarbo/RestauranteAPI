@@ -29,5 +29,15 @@ namespace RestauranteAPI.Controllers
                 return StatusCode(500, new { msg = "Error al obtener platos", detalle = ex.Message });
             }
         }
+        [HttpDelete]
+        [Route("eliminar/{id:int}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            bool respuesta = await _platoData.Eliminar(id);
+            if (respuesta)
+                return Ok(new { resultado = true, mensaje = "Plato eliminado con éxito" });
+            else
+                return BadRequest(new { resultado = false, mensaje = "No se pudo eliminar el plato. Verifique si el ID existe." });
+        }
     }
 }

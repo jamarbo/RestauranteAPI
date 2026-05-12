@@ -36,5 +36,28 @@ namespace RestauranteAPI.Data
             }
             return oLista;
         }
+        public async Task<bool> Eliminar(int id)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    SqlCommand cmd = new SqlCommand("DELETE FROM Platos WHERE id_plato = @id", con);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.CommandType = CommandType.Text;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Log error si es necesario
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
     }
 }
