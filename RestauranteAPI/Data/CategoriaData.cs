@@ -43,5 +43,33 @@ namespace RestauranteAPI.Data
                 return await cmd.ExecuteNonQueryAsync() > 0;
             }
         }
+
+        public async Task<bool> Editar(Categoria objeto)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    // Usamos una consulta directa o un Store Procedure si prefieres
+                    string query = "UPDATE Categorias SET nombre= @nombre WHERE id_categoria = @id";
+                    SqlCommand cmd = new SqlCommand(query, con);
+
+                    cmd.Parameters.AddWithValue("@id", objeto.id_categoria);
+                    cmd.Parameters.AddWithValue("@nombre", objeto.nombre);
+                    cmd.CommandType = CommandType.Text;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error en Editar Categoria: " + ex.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
     }
 }

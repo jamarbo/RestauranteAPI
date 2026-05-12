@@ -55,6 +55,42 @@ namespace RestauranteAPI.Data
 
                 return await cmd.ExecuteNonQueryAsync() > 0;
             }
+
+        }
+
+        public async Task<bool> Editar(Cliente objeto)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    string query = @"UPDATE Clientes 
+                             SET nombre = @nombre, 
+                                 telefono = @tel, 
+                                 email = @mail, 
+                                 direccion_defecto = @dir 
+                             WHERE id_cliente = @id";
+
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    cmd.Parameters.AddWithValue("@id", objeto.id_cliente);
+                    cmd.Parameters.AddWithValue("@nombre", objeto.nombre);
+                    cmd.Parameters.AddWithValue("@tel", objeto.telefono);
+                    cmd.Parameters.AddWithValue("@mail", objeto.email);
+                    cmd.Parameters.AddWithValue("@dir", objeto.direccion_defecto);
+                    cmd.CommandType = CommandType.Text;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    // Opcional: Loggear el error ex.Message
+                    respuesta = false;
+                }
+            }
+            return respuesta;
         }
     }
 }

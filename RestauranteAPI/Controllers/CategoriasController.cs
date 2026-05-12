@@ -47,5 +47,21 @@ namespace RestauranteAPI.Controllers
                 return BadRequest(new { resultado = false, mensaje = "No se pudo crear la categoría" });
             }
         }
+
+        [HttpPut]
+        [Route("editar")]
+        public async Task<IActionResult> Editar([FromBody] Categoria objeto)
+        {
+            bool respuesta = await _categoriaData.Editar(objeto);
+
+            if (respuesta)
+            {
+                return Ok(new { resultado = true, mensaje = "Categoría modificada con éxito" });
+            }
+            else
+            {
+                return BadRequest(new { resultado = false, mensaje = "No se pudo modificar la categoría. Verifique el ID." });
+            }
+        }
     }
 }

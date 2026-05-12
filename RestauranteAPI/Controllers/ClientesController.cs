@@ -32,5 +32,16 @@ namespace RestauranteAPI.Controllers
             else
                 return BadRequest(new { resultado = false, mensaje = "No se pudo crear el cliente" });
         }
+
+        [HttpPut]
+        [Route("editar")]
+        public async Task<IActionResult> Editar([FromBody] Cliente objeto)
+        {
+            bool respuesta = await _clienteData.Editar(objeto);
+            if (respuesta)
+                return Ok(new { resultado = true, mensaje = "Cliente modificado con éxito" });
+            else
+                return BadRequest(new { resultado = false, mensaje = "No se pudo modificar el cliente. Verifique el ID." });
+        }
     }
 }
