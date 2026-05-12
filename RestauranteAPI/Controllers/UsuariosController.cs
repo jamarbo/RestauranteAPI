@@ -40,5 +40,28 @@ namespace RestauranteAPI.Controllers
             bool respuesta = await _usuarioData.Registrar(objeto);
             return Ok(new { resultado = respuesta });
         }
+
+        // PUT: api/usuarios/editar
+        [HttpPut]
+        [Route("editar")]
+        public async Task<IActionResult> Editar([FromBody] Usuario objeto)
+        {
+            bool respuesta = await _usuarioData.Editar(objeto);
+            if (!respuesta) return BadRequest("No se pudo actualizar el usuario. Verifique el ID.");
+
+            return Ok(new { resultado = respuesta, mensaje = "Usuario actualizado con éxito" });
+        }
+        // DELETE: api/usuarios/eliminar/5
+        [HttpDelete]
+        [Route("eliminar/{id}")]
+        public async Task<IActionResult> Eliminar(int id)
+        {
+            bool respuesta = await _usuarioData.Eliminar(id);
+
+            if (!respuesta)
+                return BadRequest("No se pudo eliminar el usuario. Es posible que el ID no exista.");
+
+            return Ok(new { resultado = respuesta, mensaje = "Usuario eliminado correctamente" });
+        }
     }
 }

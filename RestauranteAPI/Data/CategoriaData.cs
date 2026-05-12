@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿//using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using System.Data;
 using RestauranteAPI.Models;
 
@@ -30,6 +31,17 @@ namespace RestauranteAPI.Data
                 }
             }
             return oLista;
+        }
+        public async Task<bool> Registrar(Categoria objeto)
+        {
+            using (var con = _conexion.Conectar())
+            {
+                await con.OpenAsync();
+                SqlCommand cmd = new SqlCommand("INSERT INTO Categorias (nombre) VALUES (@nombre)", con);
+                cmd.Parameters.AddWithValue("@nombre", objeto.nombre);
+                cmd.CommandType = CommandType.Text;
+                return await cmd.ExecuteNonQueryAsync() > 0;
+            }
         }
     }
 }

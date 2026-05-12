@@ -30,5 +30,22 @@ namespace RestauranteAPI.Controllers
                 return StatusCode(500, new { msg = "Error al obtener categorías", detalle = ex.Message });
             }
         }
+
+        [HttpPost]
+        [Route("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] Categoria objeto)
+        {
+            bool respuesta = await _categoriaData.Registrar(objeto);
+
+            if (respuesta)
+            {
+                // Devolvemos el mensaje de éxito personalizado
+                return Ok(new { resultado = true, mensaje = "Categoría Creada con éxito" });
+            }
+            else
+            {
+                return BadRequest(new { resultado = false, mensaje = "No se pudo crear la categoría" });
+            }
+        }
     }
 }

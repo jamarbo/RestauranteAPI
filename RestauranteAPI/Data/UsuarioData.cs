@@ -1,5 +1,6 @@
 ﻿using System.Data;
-using Microsoft.Data.SqlClient;
+//using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using RestauranteAPI.Models;
 
 namespace RestauranteAPI.Data
@@ -100,6 +101,64 @@ namespace RestauranteAPI.Data
                     // Jaiver, pon un punto de interrupción (Breakpoint) aquí 
                     // para leer ex.Message si sigue dando false.
                     Console.WriteLine("Error en Registrar: " + ex.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
+        public async Task<bool> Editar(Usuario objeto)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    SqlCommand cmd = new SqlCommand("usp_actualizar_usuario", con);
+
+                    // Pasamos todos los parámetros, incluyendo el ID para saber cuál editar
+                    cmd.Parameters.AddWithValue("@id_usuario", objeto.id_usuario);
+                    cmd.Parameters.AddWithValue("@nombre_completo", objeto.nombre_completo);
+                    cmd.Parameters.AddWithValue("@nombre_usuario", objeto.nombre_usuario);
+                    cmd.Parameters.AddWithValue("@password_hash", objeto.password_hash);
+                    cmd.Parameters.AddWithValue("@rol", objeto.rol);
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error en Editar: " + ex.Message);
+                    respuesta = false;
+                }
+            }
+            return respuesta;
+        }
+
+        public async Task<bool> Eliminar(int id)
+        {
+            bool respuesta = false;
+            using (var con = _conexion.Conectar())
+            {
+                try
+                {
+                    await con.OpenAsync();
+                    SqlCommand cmd = new SqlCommand("usp_eliminar_usuario", con);
+
+                    // Enviamos el ID del usuario a eliminar
+                    cmd.Parameters.AddWithValue("@id_usuario", id);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    int filasAfectadas = await cmd.ExecuteNonQueryAsync();
+
+                    // Si se eliminó al menos una fila, devolvemos true
+                    respuesta = filasAfectadas > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error en Eliminar: " + ex.Message);
                     respuesta = false;
                 }
             }
